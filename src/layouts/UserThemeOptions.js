@@ -13,6 +13,17 @@ const UserThemeOptions = () => {
   // const palette = corePalette(mode as PaletteMode, skin)
   return {
     /*
+    palette: {
+      primary: {
+        light: '#FFCDD2', // Tonalidad clara de rojo
+        main: '#F44336', // Rojo principal
+        dark: '#D32F2F', // Tonalidad oscura de rojo
+        contrastText: '#FFF' // Texto de contraste (blanco)
+      }
+    }
+
+    */
+    /*
     palette:{
       primary: {
         light: '#8479F2',
