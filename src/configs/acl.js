@@ -20,8 +20,15 @@ const defineRulesFor = (role, subject) => {
   return rules
 }
 
-export const buildAbilityFor = (role, subject) => {
-  return new AppAbility(defineRulesFor(role, subject), {
+const defineRulesForPermissions = (permissions, subject) => {
+  const { can, rules } = new AbilityBuilder(AppAbility)
+  can(permissions, subject)
+
+  return rules
+}
+
+export const buildAbilityFor = (permissions, subject) => {
+  return new AppAbility(defineRulesForPermissions(permissions, subject), {
     // https://casl.js.org/v5/en/guide/subject-type-detection
     // @ts-ignore
     detectSubjectType: object => object.type
@@ -29,8 +36,8 @@ export const buildAbilityFor = (role, subject) => {
 }
 
 export const defaultACLObj = {
-  action: 'manage',
-  subject: 'all'
+  action: 'basic',
+  subject: 'auth'
 }
 
 export default defineRulesFor

@@ -87,8 +87,8 @@ const schema = yup.object().shape({
 })
 
 const defaultValues = {
-  password: 'admin',
-  email: 'admin@vuexy.com'
+  password: '',
+  email: ''
 }
 
 const LoginPage = () => {
@@ -117,8 +117,8 @@ const LoginPage = () => {
   })
 
   const onSubmit = data => {
-    const { email, password } = data
-    auth.login({ email, password, rememberMe }, () => {
+    const { email: username, password, recaptchaToken = 'unknow' } = data
+    auth.login({ username, password, rememberMe, recaptchaToken }, () => {
       setError('email', {
         type: 'manual',
         message: 'Email or Password is invalid'

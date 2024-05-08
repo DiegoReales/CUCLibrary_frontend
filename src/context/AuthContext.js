@@ -10,6 +10,15 @@ import axios from 'axios'
 // ** Config
 import authConfig from 'src/configs/auth'
 
+// ** Auth Axios Instance
+const axiosIns = axios.create({
+  baseURL: authConfig.baseEndpoint,
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  withCredentials: true
+})
+
 // ** Defaults
 const defaultProvider = {
   user: null,
@@ -28,31 +37,26 @@ const AuthProvider = ({ children }) => {
 
   // ** Hooks
   const router = useRouter()
+
   useEffect(() => {
     const initAuth = async () => {
       const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)
       if (storedToken) {
         setLoading(true)
-        await axios
-          .get(authConfig.meEndpoint, {
-            headers: {
-              Authorization: storedToken
-            }
-          })
-          .then(async response => {
-            setLoading(false)
-            setUser({ ...response.data.userData })
-          })
-          .catch(() => {
-            localStorage.removeItem('userData')
-            localStorage.removeItem('refreshToken')
-            localStorage.removeItem('accessToken')
-            setUser(null)
-            setLoading(false)
-            if (authConfig.onTokenExpiration === 'logout' && !router.pathname.includes('login')) {
-              router.replace('/login')
-            }
-          })
+        const userData = window.localStorage.getItem(authConfig.storageUserDataKeyName)
+        if (userData) {
+          setUser(JSON.parse(userData))
+        }
+
+        // setUser({
+        //   id: 1,
+        //   role: 'admin',
+        //   password: 'admin',
+        //   fullName: 'John Doe',
+        //   username: 'johndoe',
+        //   email: 'admin@vuexy.com'
+        // })
+        setLoading(false)
       } else {
         setLoading(false)
       }
@@ -62,15 +66,29 @@ const AuthProvider = ({ children }) => {
   }, [])
 
   const handleLogin = (params, errorCallback) => {
-    axios
+    axiosIns
       .post(authConfig.loginEndpoint, params)
-      .then(async response => {
-        params.rememberMe
-          ? window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.accessToken)
-          : null
+      .then(async ({ data }) => {
         const returnUrl = router.query.returnUrl
-        setUser({ ...response.data.userData })
-        params.rememberMe ? window.localStorage.setItem('userData', JSON.stringify(response.data.userData)) : null
+
+        const userData = {
+          id: data.user.id,
+          role: data.user.role.name,
+          password: data.accessToken,
+          fullName: `${data.user.name ?? ''} ${data.user.lastname ?? ''}`,
+          username: data.user.username,
+          email: data.user.username,
+          permissions: data.user.permissions
+        }
+
+        setUser(userData)
+
+        if (params.rememberMe) {
+          window.localStorage.setItem(authConfig.storageTokenKeyName, data.accessToken)
+          window.localStorage.setItem(authConfig.onTokenExpiration, data.refreshToken)
+          window.localStorage.setItem(authConfig.storageUserDataKeyName, JSON.stringify(userData))
+        }
+
         const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
         router.replace(redirectURL)
       })
@@ -81,8 +99,9 @@ const AuthProvider = ({ children }) => {
 
   const handleLogout = () => {
     setUser(null)
-    window.localStorage.removeItem('userData')
+    window.localStorage.removeItem(authConfig.storageUserDataKeyName)
     window.localStorage.removeItem(authConfig.storageTokenKeyName)
+    window.localStorage.removeItem(authConfig.onTokenExpiration)
     router.push('/login')
   }
 
