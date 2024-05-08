@@ -12,6 +12,7 @@ import themeConfig from 'src/configs/themeConfig'
 
 // ** Hook
 import { useSettings } from 'src/@core/hooks/useSettings'
+import LogoCUC from 'src/views/shared/LogoCUC'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   display: 'flex',
@@ -39,12 +40,14 @@ const BlankLayoutAppBar = () => {
       <Toolbar
         sx={{
           justifyContent: 'space-between',
-          p: theme => `${theme.spacing(0, 6)} !important`,
+          p: theme => `${theme.spacing(0, 0)} !important`,
           minHeight: `${theme.mixins.toolbar.minHeight - (skin === 'bordered' ? 1 : 0)}px !important`
         }}
       >
         <LinkStyled href='/'>
-          <svg width={34} viewBox='0 0 32 22' fill='none' xmlns='http://www.w3.org/2000/svg'>
+          <LogoCUC fill={theme.palette.primary.main} />
+
+          {/* <svg width={34} viewBox='0 0 32 22' fill='none' xmlns='http://www.w3.org/2000/svg'>
             <path
               fillRule='evenodd'
               clipRule='evenodd'
@@ -74,7 +77,7 @@ const BlankLayoutAppBar = () => {
           </svg>
           <Typography variant='h4' sx={{ ml: 2.5, fontWeight: 700, lineHeight: '24px' }}>
             {themeConfig.templateName}
-          </Typography>
+          </Typography> */}
         </LinkStyled>
       </Toolbar>
     </AppBar>
