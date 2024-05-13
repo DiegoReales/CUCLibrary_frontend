@@ -1,4 +1,3 @@
-import { userAgent } from 'next/server'
 import useBackendApi from 'src/hooks/useBackendApi'
 
 const useBookService = () => {
@@ -58,6 +57,24 @@ const useBookService = () => {
     })
   }
 
+  const bookCreate = book => {
+    return new Promise((resolve, reject) => {
+      backendApi
+        .post('/books', book)
+        .then(({ data }) => resolve(data))
+        .catch(error => reject(error))
+    })
+  }
+
+  const bookEdit = (bookId, book) => {
+    return new Promise((resolve, reject) => {
+      backendApi
+        .put(`/books/${bookId}`, book)
+        .then(({ data }) => resolve(data))
+        .catch(error => reject(error))
+    })
+  }
+
   const bookDelete = bookId => {
     return new Promise((resolve, reject) => {
       backendApi
@@ -74,6 +91,8 @@ const useBookService = () => {
     getBookBorrowedByMe,
     bookCheckOut,
     bookCheckIn,
+    bookCreate,
+    bookEdit,
     bookDelete
   }
 }

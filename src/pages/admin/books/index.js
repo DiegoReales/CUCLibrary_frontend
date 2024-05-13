@@ -1,6 +1,6 @@
 // ** MUI Imports
-import { forwardRef, useEffect, useState } from 'react'
-import { Card, IconButton, Typography, styled } from '@mui/material'
+import { useEffect, useState } from 'react'
+import { Card, Typography } from '@mui/material'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
 import Table from '@mui/material/Table'
@@ -13,18 +13,15 @@ import TableContainer from '@mui/material/TableContainer'
 import useBookService from 'src/services/BookServices'
 import useBgColor from 'src/@core/hooks/useBgColor'
 
-import toast from 'react-hot-toast'
 import PageHeader from 'src/@core/components/page-header'
-import IconifyIcon from 'src/@core/components/icon'
 import BookDelete from 'src/views/admin/books/BookDelete'
+import BookEdit from 'src/views/admin/books/BookEdit'
+import { Box } from '@mui/system'
+import BookCreate from 'src/views/admin/books/BookCreate'
 
 const CRUDBook = () => {
   const bookService = useBookService()
   const [books, setBooks] = useState([])
-
-  const [selectedBook, setSelectedBook] = useState(null)
-  const [show, setShow] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
 
   const bgColor = useBgColor()
 
@@ -34,20 +31,23 @@ const CRUDBook = () => {
     getBooks()
   }, [])
 
-  const handleEdit = book => () => {
-    console.log(book)
-  }
-
   return (
     <Grid container spacing={6}>
-      <PageHeader
-        title={
-          <Typography variant='h4' color='primary'>
-            CRUD de Libros
-          </Typography>
-        }
-        subtitle={<Typography sx={{ color: 'text.secondary' }}>Administración de libros</Typography>}
-      />
+      <Grid item xs={12}>
+        <Box sx={{ gap: 2, display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <div>
+              <Typography variant='h4' color='primary'>
+                CRUD de Libros
+              </Typography>
+              <Typography sx={{ color: 'text.secondary' }}>Administración de libros</Typography>
+            </div>
+          </Box>
+          <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
+            <BookCreate handleRefresh={getBooks} />
+          </Box>
+        </Box>
+      </Grid>
       <Grid item xs={12}>
         <Card>
           <TableContainer component={Paper}>
@@ -74,9 +74,7 @@ const CRUDBook = () => {
                     <TableCell>{`${i.author.name} ${i.author.lastname}`}</TableCell>
                     <TableCell>{i.bookStatus.description}</TableCell>
                     <TableCell>
-                      <IconButton onClick={handleEdit(i)}>
-                        <IconifyIcon color={bgColor.warningFilled.backgroundColor} icon='tabler:edit' />
-                      </IconButton>
+                      <BookEdit book={i} handleRefresh={getBooks} />
                       <BookDelete book={i} handleRefresh={getBooks} />
                     </TableCell>
                   </TableRow>
