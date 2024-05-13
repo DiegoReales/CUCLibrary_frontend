@@ -97,6 +97,30 @@ const AuthProvider = ({ children }) => {
       })
   }
 
+  const handleSignUp = (params, errorCallback) => {
+
+    axiosIns
+      .post(authConfig.registerEndpoint, params)
+      .then(async ({ data }) => {
+
+
+        // const userData = {
+        //   email: data.email,
+        //   name: data.name,
+        //   lastname: data.lastname,
+        //   dni: data.dni,
+        //   password: data.password,
+        //   passwordConfirm: data.passwordConfirmation
+        // }
+
+        // setUser(userData)
+        router.replace('/login')
+      })
+      .catch(err => {
+        if (errorCallback) errorCallback(err)
+      })
+  }
+
   const handleLogout = () => {
     setUser(null)
     window.localStorage.removeItem(authConfig.storageUserDataKeyName)
@@ -111,6 +135,7 @@ const AuthProvider = ({ children }) => {
     setUser,
     setLoading,
     login: handleLogin,
+    signUp: handleSignUp,
     logout: handleLogout
   }
 
