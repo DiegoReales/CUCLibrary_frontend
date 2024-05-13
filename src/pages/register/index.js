@@ -39,7 +39,6 @@ import LogoCUC from 'src/views/shared/LogoCUC'
 import { useAuth } from 'src/hooks/useAuth'
 import { FormHelperText } from '@mui/material'
 
-
 // ** Styled Components
 const RegisterIllustration = styled('img')(({ theme }) => ({
   zIndex: 2,
@@ -81,17 +80,21 @@ const FormControlLabel = styled(MuiFormControlLabel)(({ theme }) => ({
 }))
 
 const schema = yup.object().shape({
-  dni: yup.number().required().positive().integer().min(6),
-  name: yup.string().required(),
-  lastname: yup.string().required(),
-  email: yup.string().email().required(),
-  password: yup.string().min(5).required(),
-  passwordConfirm: yup.string().min(5).required().oneOf([yup.ref('password'), null], 'Passwords must match'),
-  termsOfService: yup.bool().oneOf([true], "You must accept the terms and conditions")
+  dni: yup.number().required('Este campo es requerido').positive().integer().min(6),
+  name: yup.string().required('Este campo es requerido'),
+  lastname: yup.string().required('Este campo es requerido'),
+  email: yup.string().email().required('Este campo es requerido'),
+  password: yup.string().min(5).required('Este campo es requerido'),
+  passwordConfirm: yup
+    .string()
+    .min(5)
+    .required()
+    .oneOf([yup.ref('password'), null], 'Contraseñas no coninciden'),
+  termsOfService: yup.bool().oneOf([true], 'Debe aceptar terminos y condiciones')
 })
 
 const defaultValues = {
-  dni: '',
+  dni: null,
   name: '',
   lastname: '',
   password: '',
@@ -126,9 +129,8 @@ const Register = () => {
     resolver: yupResolver(schema)
   })
 
-  const signUp = (data) => {
-
-    setIsLoading(true);
+  const signUp = data => {
+    setIsLoading(true)
     const { dni, name, lastname, email, password, passwordConfirm, termsOfService } = data
     if (termsOfService) {
       auth.signUp({ dni, name, lastname, email, password, passwordConfirm }, () => {
@@ -136,10 +138,9 @@ const Register = () => {
           type: 'manual',
           message: 'Sorry, an error ocurred. Try again or few minutes later.'
         })
-        setIsLoading(false);
+        setIsLoading(false)
       })
     }
-
   }
 
   return (
@@ -183,45 +184,87 @@ const Register = () => {
               <Typography sx={{ color: 'text.secondary' }}>Completa el formulario para registrarte!</Typography>
             </Box>
             <form autoComplete='off' onSubmit={handleSubmit(signUp)}>
-              <Controller name='dni' control={control} rules={{ required: true }}
+              <Controller
+                name='dni'
+                control={control}
+                rules={{ required: true }}
                 render={({ field: { value, onChange, onBlur } }) => (
                   <CustomTextField
-                    autoFocus fullWidth sx={{ mb: 4 }} label='Identificación' placeholder='1234567' error={Boolean(errors.dni)}
+                    autoFocus
+                    fullWidth
+                    sx={{ mb: 4 }}
+                    label='Identificación'
+                    placeholder='1234567'
+                    error={Boolean(errors.dni)}
                     value={value}
                     onBlur={onBlur}
                     onChange={onChange}
-                    {...(errors.dni && { helperText: errors.dni.message })} />
+                    {...(errors.dni && { helperText: errors.dni.message })}
+                  />
                 )}
               />
-              <Controller name='name' control={control} rules={{ required: true }}
+              <Controller
+                name='name'
+                control={control}
+                rules={{ required: true }}
                 render={({ field: { value, onChange, onBlur } }) => (
-                  <CustomTextField autoFocus control={control} fullWidth sx={{ mb: 4 }} label='Nombres' placeholder='john' error={Boolean(errors.name)}
+                  <CustomTextField
+                    control={control}
+                    fullWidth
+                    sx={{ mb: 4 }}
+                    label='Nombres'
+                    placeholder='john'
+                    error={Boolean(errors.name)}
                     value={value}
                     onBlur={onBlur}
                     onChange={onChange}
-                    {...(errors.name && { helperText: errors.name.message })} />
+                    {...(errors.name && { helperText: errors.name.message })}
+                  />
                 )}
               />
-              <Controller name='lastname' control={control} rules={{ required: true }}
+              <Controller
+                name='lastname'
+                control={control}
+                rules={{ required: true }}
                 render={({ field: { value, onChange, onBlur } }) => (
-                  <CustomTextField fullWidth control={control} sx={{ mb: 4 }} label='Apellidos' placeholder='doe' error={Boolean(errors.lastname)}
+                  <CustomTextField
+                    fullWidth
+                    control={control}
+                    sx={{ mb: 4 }}
+                    label='Apellidos'
+                    placeholder='doe'
+                    error={Boolean(errors.lastname)}
                     value={value}
                     onBlur={onBlur}
                     onChange={onChange}
-                    {...(errors.lastname && { helperText: errors.lastname.message })} />
+                    {...(errors.lastname && { helperText: errors.lastname.message })}
+                  />
                 )}
               />
-              <Controller name='email' control={control} rules={{ required: true }}
+              <Controller
+                name='email'
+                control={control}
+                rules={{ required: true }}
                 render={({ field: { value, onChange, onBlur } }) => (
-                  <CustomTextField fullWidth control={control} label='Correo Electrónico' sx={{ mb: 4 }} placeholder='johndoe@example.com' error={Boolean(errors.email)}
+                  <CustomTextField
+                    fullWidth
+                    control={control}
+                    label='Correo Electrónico'
+                    sx={{ mb: 4 }}
+                    placeholder='johndoe@example.com'
+                    error={Boolean(errors.email)}
                     value={value}
                     onBlur={onBlur}
                     onChange={onChange}
-                    {...(errors.email && { helperText: errors.email.message })} />
+                    {...(errors.email && { helperText: errors.email.message })}
+                  />
                 )}
               />
               <Box sx={{ mb: 1.5 }}>
-                <Controller name='password' control={control} rules={{ required: true }}
+                <Controller
+                  name='password'
+                  control={control}
+                  rules={{ required: true }}
                   render={({ field: { value, onChange, onBlur } }) => (
                     <CustomTextField
                       fullWidth
@@ -251,7 +294,10 @@ const Register = () => {
                   )}
                 />
               </Box>
-              <Controller name='passwordConfirm' control={control} rules={{ required: true }}
+              <Controller
+                name='passwordConfirm'
+                control={control}
+                rules={{ required: true }}
                 render={({ field: { value, onChange, onBlur } }) => (
                   <CustomTextField
                     fullWidth
@@ -282,35 +328,47 @@ const Register = () => {
               />
               {/* error={Boolean(errors.termsOfService)}
                       {...(errors.termsOfService && { helperText: errors.termsOfService.message })} */}
-              <Controller name='termsOfService' control={control} rules={{ required: true }}
+              <Controller
+                name='termsOfService'
+                control={control}
+                rules={{ required: true }}
                 render={({ field: { value, onChange, onBlur } }) => (
-
                   <FormControlLabel
-                    control={<Checkbox value={value}
-                      onBlur={onBlur}
-                      onChange={onChange}
-                      error={Boolean(errors.termsOfService)}
-                      helperText={"asdasd"}
-                    />}
-                    sx={{ mb: 4, mt: 1.5, '& .MuiFormControlLabel-label': { fontSize: theme.typography.body2.fontSize } }}
+                    control={
+                      <Checkbox
+                        value={value}
+                        onBlur={onBlur}
+                        onChange={onChange}
+                        error={Boolean(errors.termsOfService)}
+                        helperText={'asdasd'}
+                      />
+                    }
+                    sx={{
+                      mb: 4,
+                      mt: 1.5,
+                      '& .MuiFormControlLabel-label': { fontSize: theme.typography.body2.fontSize }
+                    }}
                     label={
                       <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
                         <Typography sx={{ color: 'text.secondary' }}>Acepto </Typography>
                         <Typography component={LinkStyled} href='/' onClick={e => e.preventDefault()} sx={{ ml: 1 }}>
                           politica de privacidad & terminos
                         </Typography>
-                        {value ? '' : <FormHelperText>Check the termns</FormHelperText>}
+                        {value ? (
+                          ''
+                        ) : (
+                          <FormHelperText sx={{ color: theme.palette.error.main }}>
+                            Aceptar terminos y condiciones
+                          </FormHelperText>
+                        )}
                       </Box>
                     }
-
                   />
                 )}
               />
 
               <Button fullWidth type='submit' variant='contained' sx={{ mb: 4 }} disabled={isLoading}>
-                {
-                  isLoading ? 'Registrando Cuenta...' : 'Registrar me'
-                }
+                {isLoading ? 'Registrando Cuenta...' : 'Registrar me'}
               </Button>
               <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
                 <Typography sx={{ color: 'text.secondary', mr: 2 }}>¿Ya tienes una cuenta?</Typography>

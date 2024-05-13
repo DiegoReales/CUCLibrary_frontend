@@ -82,8 +82,8 @@ const FormControlLabel = styled(MuiFormControlLabel)(({ theme }) => ({
 }))
 
 const schema = yup.object().shape({
-  email: yup.string().email().required(),
-  password: yup.string().min(5).required()
+  email: yup.string().email('Debes ingreser un correo valido').required('Este campo es obligatorio'),
+  password: yup.string().min(5, 'El valor debe contener mínimo 5 caracteres').required('Este campo es obligatorio')
 })
 
 const defaultValues = {
@@ -121,7 +121,7 @@ const LoginPage = () => {
     auth.login({ username, password, rememberMe, recaptchaToken }, () => {
       setError('email', {
         type: 'manual',
-        message: 'Email or Password is invalid'
+        message: 'Correo o contraseña invalida'
       })
     })
   }
