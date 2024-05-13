@@ -58,13 +58,23 @@ const useBookService = () => {
     })
   }
 
+  const bookDelete = bookId => {
+    return new Promise((resolve, reject) => {
+      backendApi
+        .delete(`/books/${bookId}`)
+        .then(({ data }) => resolve(data))
+        .catch(error => reject(error))
+    })
+  }
+
   return {
     getBook,
     getBooks,
     getBooksAvailable,
     getBookBorrowedByMe,
     bookCheckOut,
-    bookCheckIn
+    bookCheckIn,
+    bookDelete
   }
 }
 

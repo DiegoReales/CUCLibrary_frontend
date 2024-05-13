@@ -9,17 +9,35 @@ export default [
   {
     title: 'Prestar libro',
     path: '/books/checkout',
-    icon: 'tabler:books',
+    icon: 'tabler:bookmarks-filled',
     action: 'basic',
     subject: 'auth'
   },
   {
     title: 'Devolver libro',
     path: '/books/checkin',
-    icon: 'tabler:books',
+    icon: 'tabler:bookmarks',
     action: 'basic',
     subject: 'auth'
   },
+  {
+    title: 'CRUD de libros',
+    path: '/admin/books',
+    icon: 'tabler:books',
+    action: 'admin',
+    subject: 'auth'
+  }
+
+  /*,
+  {
+    title: 'CRUD de autores',
+    path: '/admin/authors',
+    icon: 'tabler:users-group',
+    action: 'admin',
+    subject: 'auth'
+  }
+
+  ,
   {
     path: '/acl',
     title: 'Access Control',
@@ -27,4 +45,5 @@ export default [
     action: 'basic',
     subject: 'auth'
   }
+  */
 ]
